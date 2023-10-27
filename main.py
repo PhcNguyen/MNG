@@ -6,7 +6,7 @@ from docs import UpdateSheet, GetData, DeleteData, SumData
 keep_alive()
 #keep_alive để bot 24/24 khi bạn sài replit
 #sử dụng thêm UpTimeRobot nha !
-#Chạy vps thì xoá hàm keep_alive()
+#Chạy vps thì xoá file keep_alive()
 API_KEY = "key bot telegram cua ban"
 bot = telebot.TeleBot(API_KEY, parse_mode=None)
 
