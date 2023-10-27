@@ -44,6 +44,7 @@ def getData(msg):
 def SumMoney(msg):
   Sum = SumData()
   bot.send_message(msg.chat.id, f"Tồng: {Sum:,} !")
+  
 @bot.message_handler(commands=["delete"])
 def Delete(msg):
   data = msg.text
