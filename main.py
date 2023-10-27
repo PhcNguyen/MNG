@@ -9,6 +9,7 @@ keep_alive()
 #Chạy vps thì xoá hàm keep_alive()
 API_KEY = "key bot telegram cua ban"
 bot = telebot.TeleBot(API_KEY, parse_mode=None)
+
 @bot.message_handler(commands=['help'])
 def start(msg):
   bot.send_message(msg.chat.id, '/s - Thêm Dữ Liệu.\n/g - Hiển Thị Dữ Liệu.\n/sum - Tính Tổng Dữ Liệu.')
