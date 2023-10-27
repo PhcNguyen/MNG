@@ -4,12 +4,13 @@ from time import sleep
 from docs import UpdateSheet, GetData, DeleteData, SumData
 
 keep_alive()
-#keep_alive để bot luôn hoạt đông khi bạn sài replit
+#keep_alive để bot 24/24 khi bạn sài replit
 API_KEY = "key bot telegram cua ban"
 bot = telebot.TeleBot(API_KEY, parse_mode=None)
 @bot.message_handler(commands=['help'])
 def start(msg):
   bot.send_message(msg.chat.id, '/s - Thêm Dữ Liệu.\n/g - Hiển Thị Dữ Liệu.\n/sum - Tính Tổng Dữ Liệu.')
+  
 @bot.message_handler(commands=["s"])
 def update(msg):
   msgChat = "Bạn đã nhập sai Cú Pháp !\n  /s <Tên> <Giá>"
@@ -29,6 +30,7 @@ def update(msg):
     id=bot.send_message(msg.chat.id, msgChat)
     sleep(5)
     bot.delete_message(msg.chat.id, id.message_id)
+    
 @bot.message_handler(commands=["g"])
 def getData(msg):
   MsgID2 = GetData()
@@ -49,4 +51,5 @@ def Delete(msg):
     bot.edit_message_text("Done !", chat_id=msg.chat.id, message_id=ID.message_id)
   except:
     bot.send_message(msg.chat.id, "Bạn đã nhập sai Cú Pháp!\n/delete <ID>")
+    
 bot.polling()
