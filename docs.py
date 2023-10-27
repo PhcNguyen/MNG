@@ -1,9 +1,10 @@
 import gspread
 import datetime
-from constants import data
+
+data = {"key gmail tuong tac voi ggsheet"}
 
 gc = gspread.service_account_from_dict(data)
-sh = gc.open_by_key("1TCEXbeUdEsonC62bk9sPj55nemMD_hHN5HN4uzIQCSY")
+sh = gc.open_by_key("key")
 wks = sh.sheet1
 def time_set():
   current_time = datetime.datetime.now()
