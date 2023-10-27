@@ -4,6 +4,7 @@ from time import sleep
 from docs import UpdateSheet, GetData, DeleteData, SumData
 
 keep_alive()
+#keep_alive để bot luôn hoạt đông khi bạn sài replit
 API_KEY = "key bot telegram cua ban"
 bot = telebot.TeleBot(API_KEY, parse_mode=None)
 @bot.message_handler(commands=['help'])
