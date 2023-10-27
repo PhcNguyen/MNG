@@ -39,6 +39,7 @@ def getData(msg):
   print(MsgID2)
   for I in range(len(MsgID2)):
     bot.send_message(msg.chat.id, MsgID2[I])
+    
 @bot.message_handler(commands=["sum"])
 def SumMoney(msg):
   Sum = SumData()
