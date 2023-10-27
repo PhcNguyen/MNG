@@ -1,22 +1,15 @@
 import gspread
-import datetime
 
 data = {"key gmail tuong tac voi ggsheet"}
 
 gc = gspread.service_account_from_dict(data)
 sh = gc.open_by_key("key")
 wks = sh.sheet1
-def time_set():
-  current_time = datetime.datetime.now()
-  formatted_time = current_time.strftime("%H:%M")
-  return formatted_time
-def date_set():
-  current_time = datetime.datetime.now()
-  formatted_date = current_time.strftime("%Y-%m-%d ")
-  return formatted_date
+
 def list_data():
   list_of_lists = wks.get_all_values()
   return list_of_lists
+  
 def UpdateSheet(data):
   data = data.split()
   del data[0]
@@ -37,6 +30,7 @@ def UpdateSheet(data):
   row_2 = wks.cell(current, 3)
   row_2.value = formatted_date
   wks.update_cell(row_2.row, row_2.col, row_2.value)
+  
 def GetData():
   list_of_lists = list_data()
   NameIteam = []
@@ -56,11 +50,12 @@ def GetData():
     MsgID = ''.join(Msg)
     MsgID2.append(MsgID)
   return MsgID2
-def DeleteData(ID):
   
+def DeleteData(ID):
   ID = int(ID) + 1
   wks.delete_row(ID)
   return True
+  
 def SumData():
   list_of_lists = list_data()
   Sum = 0
