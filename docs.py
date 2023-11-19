@@ -1,67 +1,106 @@
+# [IMPORT]
 import gspread
+import telebot
+from KEY import API_KEY, DATA, OPEN_KEY
+from threading import Thread
+from telebot import types
+from time import sleep
+from datetime import datetime
 
-data = {"key gmail tuong tac voi ggsheet"}
-
-gc = gspread.service_account_from_dict(data)
-sh = gc.open_by_key("key")
+# [OPEN SHEET]
+gc = gspread.service_account_from_dict(DATA)
+sh = gc.open_by_key(OPEN_KEY)
 wks = sh.sheet1
+crossbar = '_______________'
 
-def list_data():
-  list_of_lists = wks.get_all_values()
-  return list_of_lists
-  
-def UpdateSheet(data):
-  data = data.split()
-  del data[0]
-  list_of_lists = list_data()
-  current = len(list_of_lists) + 1
-  MC = len(data) - 1
-  String = ''
-  X = 2
-  for X in range(MC):
-    String += ' '+ data[X]
-  row = wks.cell(current, 1)
-  row.value = String
-  wks.update_cell(row.row, row.col, row.value)
-  row_1 = wks.cell(current, 2)
-  row_1.value = data[MC]
-  wks.update_cell(row_1.row, row_1.col, row_1.value)
-  formatted_date = date_set()
-  row_2 = wks.cell(current, 3)
-  row_2.value = formatted_date
-  wks.update_cell(row_2.row, row_2.col, row_2.value)
-  
-def GetData():
-  list_of_lists = list_data()
-  NameIteam = []
-  MoneyIteam = []
-  MsgID = []
-  MsgID2 = []
-  for ID in range(len(list_of_lists)):
-    NameIteam.append(list_of_lists[ID][0])
-    MoneyIteam.append(list_of_lists[ID][1])
-  print(NameIteam)
-  for I in range(len(NameIteam)):
-    if I == 0:
-      continue
-    Money = MoneyIteam[I]
-    Money = int(Money)
-    Msg = f"\n[{I}] Iteam: {NameIteam[I]} \n      Money: {Money:,} VNÐ\n"
-    MsgID = ''.join(Msg)
-    MsgID2.append(MsgID)
-  return MsgID2
-  
-def DeleteData(ID):
-  ID = int(ID) + 1
-  wks.delete_row(ID)
-  return True
-  
-def SumData():
-  list_of_lists = list_data()
-  Sum = 0
-  for ID in range(len(list_of_lists)):
-    if (ID == 0):
-      continue
-    Money = list_of_lists[ID][1]
-    Sum += int(Money)
-  return Sum
+# [API TELEGRAM]
+bot = telebot.TeleBot(API_KEY, parse_mode=None)
+
+# [CODE]
+def Delete(msg):
+	chat_id = msg.chat.id
+	message_id = msg.message_id
+	bot.delete_message(chat_id=chat_id, message_id=message_id)
+	return 0
+	
+def SendDel(msg):
+	user = msg.from_user.id
+	chat_id_to_send = str(user)
+	message_to_send = f"{crossbar}\nHoàn Thành !"
+	delay_seconds = 10
+	sent_message = bot.send_message(chat_id_to_send, message_to_send)
+	sleep(delay_seconds)
+	bot.delete_message(chat_id_to_send, sent_message.message_id)
+	return 0
+	
+def Error(msg):
+	now = datetime.now()
+	user = msg.from_user.id
+	chat_id_to_send = f'{user}'
+	message_to_send = f"{crossbar}\nERROR!"
+	delay_seconds = 10
+	sent_message = bot.send_message(chat_id_to_send, message_to_send)
+	sleep(delay_seconds)
+	bot.delete_message(chat_id_to_send, sent_message.message_id)
+	return 0
+	
+def Send(msg, text):
+	markup = types.InlineKeyboardMarkup()
+	box = types.InlineKeyboardButton(text="Delete", callback_data="1")
+	markup.row(box)
+	bot.send_message(msg.chat.id, text, reply_markup=markup)
+	return 0
+	
+def ListSheet():
+	list_lists = wks.get_all_values()
+	del list_lists[0]
+	return list_lists
+	
+def UpdataSheet(msg):
+	def Data(text, coin):
+		list_lists = ListSheet()
+		current = len(list_lists) + 2
+		wks.update_cell(current, 1, text)
+		wks.update_cell(current, 2, coin)
+		return 0
+		
+	def Main(msg):
+		text = msg.text.split()
+		coin = text[-1]
+		del text[0]
+		del text[-1]
+		text = " ".join(text)
+		Delete(msg)
+		
+		threads = [
+		Thread(target=Data, args=(text, coin)),
+		Thread(target=SendDel, args=(msg,))
+		]
+		
+		[thread.start() for thread in threads]
+		
+	Main(msg)
+	
+def DeleteSheet(msg):
+	try:
+		Delete(msg)
+		ID = int(msg.text.split()[-1]) + 1
+		wks.delete_row(ID)
+		SendDel(msg)
+	except:
+		Error(msg)
+		
+def SeeList(msg):
+	list_lists = ListSheet()
+	Delete(msg)
+	if len(list_lists) == 0:
+		Error(msg)
+		return 0
+	MSG = []
+	for ID, (iteam, coin) in enumerate(list_lists, start=1):
+		coin = int(coin)
+		formatted_coin = f"{coin:,}" if coin >= 1000 else str(coin)
+		text = f"{ID}: {iteam} {formatted_coin}\n"
+		MSG.append(text)
+	MSG = ''.join(MSG)
+	Send(msg, MSG)
