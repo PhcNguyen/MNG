@@ -2,12 +2,8 @@
 Các bạn muốn làm gì tự phát triển thêm nha !
 * Commands <space><space>
 
-/s  <Vật phẩm>  <giá>   [Thêm vào danh sách]
+/a  <Vật phẩm>  <giá>   [Thêm vào danh sách]
 
-/g   [Xem danh sách]
+/list   [Xem danh sách]
    
-/delete  <số>   [Xoá danh sách tại một điểm]
-   
-/sum   [Tổng]
-# Library
-gpsread và telebot
+/del  <số>   [Xoá danh sách tại một điểm]
