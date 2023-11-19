@@ -3,10 +3,12 @@ import telebot
 from KEY import API_KEY
 from threading import Thread
 from telebot import types
+from keep_alive import keep_alive
 from CoreSystem import UpdataSheet, DeleteSheet, SeeList
 
 # [CODE]
 bot = telebot.TeleBot(API_KEY, parse_mode=None)
+keep_alive()
 print("[SYSTEM] Start Bot")
 
 def CmdSever(msg):
