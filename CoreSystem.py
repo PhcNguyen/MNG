@@ -17,12 +17,18 @@ crossbar = '_______________'
 bot = telebot.TeleBot(API_KEY, parse_mode=None)
 
 # [CODE]
+def CmdSever(msg):
+	user = msg.from_user.id
+	text = msg.text
+	print(f"\nUser: {user}\nChat: {text}")
+	return 0
+
 def Delete(msg):
 	chat_id = msg.chat.id
 	message_id = msg.message_id
 	bot.delete_message(chat_id=chat_id, message_id=message_id)
 	return 0
-	
+
 def SendDel(msg):
 	user = msg.from_user.id
 	chat_id_to_send = str(user)
@@ -32,7 +38,7 @@ def SendDel(msg):
 	sleep(delay_seconds)
 	bot.delete_message(chat_id_to_send, sent_message.message_id)
 	return 0
-	
+
 def Error(msg):
 	now = datetime.now()
 	user = msg.from_user.id
@@ -43,14 +49,14 @@ def Error(msg):
 	sleep(delay_seconds)
 	bot.delete_message(chat_id_to_send, sent_message.message_id)
 	return 0
-	
+
 def Send(msg, text):
 	markup = types.InlineKeyboardMarkup()
 	box = types.InlineKeyboardButton(text="Delete", callback_data="1")
 	markup.row(box)
 	bot.send_message(msg.chat.id, text, reply_markup=markup)
 	return 0
-	
+
 def ListSheet():
 	list_lists = wks.get_all_values()
 	del list_lists[0]
@@ -78,10 +84,11 @@ def UpdataSheet(msg):
 		]
 		
 		[thread.start() for thread in threads]
-		
+	CmdSever(msg)
 	Main(msg)
 	
 def DeleteSheet(msg):
+	CmdSever(msg)
 	try:
 		Delete(msg)
 		ID = int(msg.text.split()[-1]) + 1
@@ -92,6 +99,7 @@ def DeleteSheet(msg):
 		
 def SeeList(msg):
 	list_lists = ListSheet()
+	CmdSever(msg)
 	Delete(msg)
 	if len(list_lists) == 0:
 		Error(msg)
